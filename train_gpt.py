@@ -1,7 +1,9 @@
-
 import torch
 import torch.nn as nn
+from pathlib import Path
 from models.gpt_model import GPTLanguageModel
+
+torch.manual_seed(1337)
 
 # 1. Configuration
 batch_size = 16
@@ -18,7 +20,11 @@ num_layers = 2
 device = "cpu"
 
 # 2. Load Shakespeare dataset
-with open("data/tinyshakespeare.txt", "r", encoding="utf-8") as f:
+data_path = Path("data/tinyshakespeare.txt")
+if not data_path.exists():
+    raise SystemExit("Dataset not found. Run: python download_data.py")
+
+with open(data_path, "r", encoding="utf-8") as f:
     text = f.read()
 
 # 3. Create character vocabulary
@@ -88,7 +94,6 @@ def estimate_loss():
     model.train()
     return results
 
-# 8. Training loop
 
 # 8. Training loop
 for step in range(max_iters):
@@ -120,7 +125,7 @@ for step in range(max_iters):
     optimizer.step()
 
 
-
+Path("outputs").mkdir(exist_ok=True)
 # 9. Save model checkpoint
 torch.save({
     "model_state_dict": model.state_dict(),

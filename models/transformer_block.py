@@ -10,7 +10,7 @@ class TransformerBlock(nn.Module):
 
     def __init__(self, n_embd, num_heads, block_size):
         super().__init__()
-
+        assert n_embd % num_heads == 0, "n_embd must be divisible by num_heads"
         # Calculate the size of each attention head
         head_size = n_embd // num_heads
 

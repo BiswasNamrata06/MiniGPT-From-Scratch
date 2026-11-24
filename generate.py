@@ -6,7 +6,7 @@ from models.gpt_model import GPTLanguageModel
 checkpoint = torch.load(
     "outputs/minigpt_checkpoint.pth",
     map_location="cpu",
-    weights_only=False
+    weights_only=True
 )
 
 # Recover configuration
@@ -32,6 +32,9 @@ model.eval()
 
 # Encoding and decoding
 def encode(text):
+    unknown = sorted(set(c for c in text if c not in stoi))
+    if unknown:
+        raise ValueError(f"Characters not in the vocabulary: {unknown}")
     return [stoi[c] for c in text]
 
 def decode(numbers):
